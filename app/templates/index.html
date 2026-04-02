@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobAssist - Assistant de Candidature Intelligent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-gradient">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-briefcase-fill me-2"></i>JobAssist
+            </a>
+            <span class="navbar-text text-white-50">
+                Assistant de Candidature Intelligent
+            </span>
+        </div>
+    </nav>
+
+    <!-- Progress Steps -->
+    <div class="container mt-4">
+        <div class="steps-container">
+            <div class="step active" id="step-indicator-1">
+                <div class="step-number">1</div>
+                <div class="step-label">Upload CV</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-indicator-2">
+                <div class="step-number">2</div>
+                <div class="step-label">Analyse</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-indicator-3">
+                <div class="step-number">3</div>
+                <div class="step-label">Offres</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" id="step-indicator-4">
+                <div class="step-number">4</div>
+                <div class="step-label">Candidature</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4 mb-5">
+
+        <!-- Step 1: Upload CV -->
+        <section id="step-1" class="step-section">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-3">
+                        <i class="bi bi-cloud-upload text-primary me-2"></i>
+                        Uploadez votre CV
+                    </h2>
+                    <p class="text-muted">Formats acceptés : PDF, DOCX (max 10 MB)</p>
+
+                    <div class="upload-zone" id="upload-zone">
+                        <input type="file" id="cv-input" accept=".pdf,.docx,.doc" class="d-none">
+                        <div class="upload-content text-center p-5">
+                            <i class="bi bi-file-earmark-arrow-up display-1 text-primary"></i>
+                            <h4 class="mt-3">Glissez votre CV ici</h4>
+                            <p class="text-muted">ou cliquez pour sélectionner un fichier</p>
+                            <button class="btn btn-primary btn-lg mt-2" onclick="document.getElementById('cv-input').click()">
+                                <i class="bi bi-folder2-open me-2"></i>Parcourir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Result -->
+                    <div id="upload-result" class="mt-4 d-none">
+                        <div class="alert alert-success d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill me-2 fs-4"></i>
+                            <div>
+                                <strong>CV uploadé avec succès !</strong>
+                                <div id="profile-preview" class="mt-2 small"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100" onclick="analyzeCV()">
+                            <i class="bi bi-robot me-2"></i>Analyser mon CV avec l'IA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Analysis -->
+        <section id="step-2" class="step-section d-none">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-3">
+                        <i class="bi bi-search text-primary me-2"></i>
+                        Analyse de votre profil
+                    </h2>
+
+                    <div id="analysis-loading" class="text-center py-5">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                        <p class="mt-3 text-muted">Analyse en cours par l'IA...</p>
+                    </div>
+
+                    <div id="analysis-result" class="d-none">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <h5><i class="bi bi-person-badge me-2"></i>Informations</h5>
+                                    <div id="info-details"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <h5><i class="bi bi-stars me-2"></i>Compétences clés</h5>
+                                    <div id="skills-tags"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-card">
+                                    <h5><i class="bi bi-file-text me-2"></i>Résumé du profil</h5>
+                                    <p id="profile-summary" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                <input type="text" id="location-input" class="form-control" value="Île-de-France" placeholder="Localisation">
+                            </div>
+                            <button class="btn btn-primary btn-lg w-100" onclick="searchJobs()">
+                                <i class="bi bi-search me-2"></i>Rechercher des offres d'emploi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Job Offers -->
+        <section id="step-3" class="step-section d-none">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-3">
+                        <i class="bi bi-briefcase text-primary me-2"></i>
+                        Offres d'emploi correspondantes
+                    </h2>
+
+                    <div id="search-loading" class="text-center py-5">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                        <p class="mt-3 text-muted">Recherche en cours sur France Travail, Indeed...</p>
+                    </div>
+
+                    <div id="offers-count" class="d-none mb-3">
+                        <span class="badge bg-primary fs-6" id="count-badge"></span>
+                    </div>
+
+                    <div id="offers-list" class="d-none"></div>
+
+                    <button class="btn btn-outline-secondary mt-3 d-none" id="back-to-analysis" onclick="showStep(2)">
+                        <i class="bi bi-arrow-left me-2"></i>Retour à l'analyse
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Generate Documents -->
+        <section id="step-4" class="step-section d-none">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-3">
+                        <i class="bi bi-file-earmark-check text-primary me-2"></i>
+                        Documents de candidature
+                    </h2>
+
+                    <div id="generate-loading" class="text-center py-5">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                        <p class="mt-3 text-muted">Génération du CV adapté et de la lettre de motivation...</p>
+                    </div>
+
+                    <div id="generate-result" class="d-none">
+                        <!-- Selected Job Info -->
+                        <div class="alert alert-info mb-4" id="selected-job-info"></div>
+
+                        <!-- Tabs for CV and Cover Letter -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-cv">
+                                    <i class="bi bi-file-person me-1"></i>CV Adapté
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-letter">
+                                    <i class="bi bi-envelope-paper me-1"></i>Lettre de Motivation
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane fade show active" id="tab-cv">
+                                <div class="document-preview" id="cv-content"></div>
+                                <a id="cv-download" href="#" class="btn btn-success mt-3" download>
+                                    <i class="bi bi-download me-2"></i>Télécharger le CV (PDF)
+                                </a>
+                            </div>
+                            <div class="tab-pane fade" id="tab-letter">
+                                <div class="document-preview" id="letter-content"></div>
+                                <a id="letter-download" href="#" class="btn btn-success mt-3" download>
+                                    <i class="bi bi-download me-2"></i>Télécharger la Lettre (PDF)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Apply Button -->
+                        <div class="mt-4 p-4 bg-light rounded-3 text-center">
+                            <h4><i class="bi bi-send-fill text-primary me-2"></i>Prêt à postuler ?</h4>
+                            <p class="text-muted">Téléchargez vos documents puis postulez directement sur le site de l'annonce</p>
+                            <a id="apply-link" href="#" target="_blank" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-up-right me-2"></i>Postuler sur le site de l'annonce
+                            </a>
+                        </div>
+
+                        <button class="btn btn-outline-secondary mt-3" onclick="showStep(3)">
+                            <i class="bi bi-arrow-left me-2"></i>Retour aux offres
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast for notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notification-toast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong class="me-auto" id="toast-title">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
