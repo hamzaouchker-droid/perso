@@ -6,7 +6,11 @@ import logging
 from datetime import datetime
 
 import anthropic
-from fpdf import FPDF
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
 logger = logging.getLogger(__name__)
 
@@ -182,54 +186,40 @@ Ne fabrique pas d'informations. Base-toi uniquement sur le profil fourni.""",
     return message.content[0].text
 
 
-class FrenchPDF(FPDF):
-    """PDF with French character support."""
-
-    def __init__(self):
-        super().__init__()
-        self.add_page()
-        self.set_auto_page_break(auto=True, margin=20)
-
-    def write_content(self, title: str, content: str):
-        # Use helvetica (built-in, supports basic latin)
-        self.set_font("Helvetica", "B", 16)
-        self.cell(0, 12, title, ln=True, align="C")
-        self.ln(8)
-
-        self.set_font("Helvetica", "", 11)
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line:
-                self.ln(4)
-                continue
-
-            # Handle headers (lines starting with ## or all caps)
-            if line.startswith("##"):
-                line = line.replace("#", "").strip()
-                self.set_font("Helvetica", "B", 13)
-                self.ln(4)
-                self.cell(0, 8, line, ln=True)
-                self.line(10, self.get_y(), 200, self.get_y())
-                self.ln(2)
-                self.set_font("Helvetica", "", 11)
-            elif line.startswith("**") and line.endswith("**"):
-                line = line.strip("*").strip()
-                self.set_font("Helvetica", "B", 11)
-                self.multi_cell(0, 6, line)
-                self.set_font("Helvetica", "", 11)
-            elif line.startswith("- ") or line.startswith("* "):
-                bullet_text = line[2:]
-                self.cell(8)
-                self.multi_cell(0, 6, f"  {bullet_text}")
-            else:
-                # Encode to latin-1, replacing unsupported chars
-                safe_line = line.encode("latin-1", errors="replace").decode("latin-1")
-                self.multi_cell(0, 6, safe_line)
+def _escape_xml(text: str) -> str:
+    """Escape XML special characters for ReportLab."""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def generate_pdf(content: str, title: str, output_path: str):
-    """Generate a PDF from text content."""
-    pdf = FrenchPDF()
-    pdf.write_content(title, content)
-    pdf.output(output_path)
+    """Generate a PDF from text content using ReportLab."""
+    doc = SimpleDocTemplate(
+        output_path, pagesize=A4,
+        leftMargin=2 * cm, rightMargin=2 * cm,
+        topMargin=2 * cm, bottomMargin=2 * cm,
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle("DocTitle", parent=styles["Title"], fontSize=16, alignment=TA_CENTER, spaceAfter=20)
+    heading_style = ParagraphStyle("Heading", parent=styles["Heading2"], fontSize=13, spaceAfter=8, spaceBefore=14, textColor="#4361ee")
+    body_style = ParagraphStyle("Body", parent=styles["Normal"], fontSize=10.5, leading=15, spaceAfter=4)
+    bold_style = ParagraphStyle("Bold", parent=body_style, fontName="Helvetica-Bold")
+    bullet_style = ParagraphStyle("Bullet", parent=body_style, leftIndent=20, bulletIndent=10)
+
+    story = [Paragraph(_escape_xml(title), title_style), Spacer(1, 12)]
+
+    for line in content.split("\n"):
+        line = line.strip()
+        if not line:
+            story.append(Spacer(1, 6))
+        elif line.startswith("##"):
+            story.append(Paragraph(_escape_xml(line.replace("#", "").strip()), heading_style))
+        elif line.startswith("**") and line.endswith("**"):
+            story.append(Paragraph(_escape_xml(line.strip("* ")), bold_style))
+        elif line.startswith("- ") or line.startswith("* "):
+            story.append(Paragraph(_escape_xml(line[2:]), bullet_style, bulletText="\u2022"))
+        else:
+            story.append(Paragraph(_escape_xml(line), body_style))
+
+    doc.build(story)
     return output_path
