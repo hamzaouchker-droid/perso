@@ -9,3 +9,4 @@ python-dotenv==1.0.0
 werkzeug==3.0.1
 reportlab==4.4.10
 markdown==3.5.1
+gunicorn==21.2.0

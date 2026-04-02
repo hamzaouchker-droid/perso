@@ -146,8 +146,8 @@ def generate():
             "success": True,
             "adapted_cv": adapted_cv,
             "cover_letter": cover_letter,
-            "cv_pdf": f"/static/generated/{cv_pdf_name}",
-            "letter_pdf": f"/static/generated/{letter_pdf_name}",
+            "cv_pdf": f"/download/{cv_pdf_name}",
+            "letter_pdf": f"/download/{letter_pdf_name}",
             "job_url": job_offer.get("url", ""),
         })
     except ValueError as e:
