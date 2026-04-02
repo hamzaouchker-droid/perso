@@ -11,6 +11,12 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
+try:
+    import lxml  # noqa: F401
+    HTML_PARSER = "lxml"
+except ImportError:
+    HTML_PARSER = "html.parser"
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -54,7 +60,7 @@ def search_france_travail(keywords: str, location: str = "Île-de-France") -> li
             logger.warning("France Travail returned status %d", resp.status_code)
             return offers
 
-        soup = BeautifulSoup(resp.text, "lxml")
+        soup = BeautifulSoup(resp.text, HTML_PARSER)
         results = soup.select("li.result")
 
         for item in results[:10]:
@@ -105,7 +111,7 @@ def search_indeed(keywords: str, location: str = "Île-de-France") -> list[JobOf
             logger.warning("Indeed returned status %d", resp.status_code)
             return offers
 
-        soup = BeautifulSoup(resp.text, "lxml")
+        soup = BeautifulSoup(resp.text, HTML_PARSER)
         cards = soup.select(".job_seen_beacon, .jobsearch-ResultsList > li, .result")
 
         for card in cards[:10]:
