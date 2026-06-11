@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy-50: #E8EBF0;
+  --color-navy-100: #C5CCD9;
+  --color-navy-200: #9DAABE;
+  --color-navy-300: #6E7FA0;
+  --color-navy-400: #4A5D88;
+  --color-navy-500: #263C6E;
+  --color-navy-600: #1B2F58;
+  --color-navy-700: #132245;
+  --color-navy-800: #0D1830;
+  --color-navy-900: #0A1628;
+
+  --color-gold-50: #FDF8EC;
+  --color-gold-100: #F9EDD0;
+  --color-gold-200: #F3DBA0;
+  --color-gold-300: #ECCC73;
+  --color-gold-400: #D9B44D;
+  --color-gold-500: #C9A84C;
+  --color-gold-600: #B8913A;
+  --color-gold-700: #9A7530;
+  --color-gold-800: #7D5C28;
+  --color-gold-900: #5E4520;
+
+  --color-emerald-50: #ECFDF5;
+  --color-emerald-100: #D1FAE5;
+  --color-emerald-200: #A7F3D0;
+  --color-emerald-300: #6EE7B7;
+  --color-emerald-400: #34D399;
+  --color-emerald-500: #10B981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065F46;
+  --color-emerald-900: #064E3B;
+
+  --color-rose-50: #FFF1F2;
+  --color-rose-100: #FFE4E6;
+  --color-rose-200: #FECDD3;
+  --color-rose-300: #FDA4AF;
+  --color-rose-400: #FB7185;
+  --color-rose-500: #F43F5E;
+  --color-rose-600: #E11D48;
+  --color-rose-700: #BE123C;
+  --color-rose-800: #9F1239;
+  --color-rose-900: #881337;
+
+  --color-amber-50: #FFFBEB;
+  --color-amber-100: #FEF3C7;
+  --color-amber-400: #FBBF24;
+  --color-amber-500: #F59E0B;
+  --color-amber-600: #D97706;
+
+  --color-sky-50: #F0F9FF;
+  --color-sky-100: #E0F2FE;
+  --color-sky-400: #38BDF8;
+  --color-sky-500: #0EA5E9;
+  --color-sky-600: #0284C7;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FAFAF8;
+  color: #1a1a2e;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C5CCD9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9DAABE;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #C5CCD9 #f1f1f1;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(201, 168, 76, 0.2);
+  color: #0A1628;
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #C9A84C;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
